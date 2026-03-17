@@ -9,9 +9,9 @@ public class MazeBuilder : MonoBehaviour
     public Material wallMaterial;
     
     [Header("Adjustment")]
-    [Tooltip("Labirenti yerden yükseltmek için (0.5 küpün yarısıdır)")]
+    [Tooltip("Vertical offset applied to lift the maze above the ground (0.5 is half the cube height).")]
     public float yOffset = 0.5f; 
-    [Tooltip("Python'daki eksenleri Unity'e göre değiştir (X, Z, Y gibi)")]
+    [Tooltip("Swap Y and Z coordinates to convert from external (e.g., Python) axis conventions to Unity's coordinate system.")]
     public bool swapYZ = false; 
 
     void Start()

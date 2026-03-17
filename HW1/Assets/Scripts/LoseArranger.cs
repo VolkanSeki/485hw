@@ -6,20 +6,20 @@ public class LoseArranger : MonoBehaviour
     public GameObject losePanel; 
     
     [Header("References")]
-    public GameObject key; // Sahnedeki Key objesi image_0.png
+    public GameObject key; // Reference to the key object in the scene
     
-    // image_14.png Koordinatlar
+    // Player respawn coordinates
     private Vector3 playerSpawn = new Vector3(38f, 0.1f, 2f);
-    // image_0.png Koordinatlar
+    // Key respawn coordinates
     private Vector3 keySpawn = new Vector3(24f, 1f, 38f);
     
     private bool isLost = false;
-    private MovementInput playerMove; // image_1.png Jammo'nun hareketi
-    private Animator playerAnim;       // image_1.png Jammo'nun animasyonu
+    private MovementInput playerMove; // Reference to the player's movement controller
+    private Animator playerAnim;      // Reference to the player's animator
 
     void Start()
     {
-        // Player (Jammo image_1.png) bileşenlerini al
+        // Cache player movement and animation components
         playerMove = GetComponent<MovementInput>();
         playerAnim = GetComponent<Animator>();
     }
@@ -34,7 +34,7 @@ public class LoseArranger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Tag'i Enemy veya Trap olan bir şeye değersek
+        // Trigger lose condition when colliding with an enemy or trap
         if (other.CompareTag("Enemy") && !isLost)
         {
             TriggerLose();
@@ -48,10 +48,10 @@ public class LoseArranger : MonoBehaviour
         isLost = true;
         if (losePanel != null) losePanel.SetActive(true);
         
-        // Jammo "dead" animasyonu
+        // Play the player's "dead" animation
         if (playerAnim != null) playerAnim.SetTrigger("dead"); 
         
-        // Kazanma anında olduğu gibi, kaybetme anında da karakter kontrolünü kapat
+        // Disable player control while in the lose state
         if (playerMove != null) playerMove.enabled = false;    
     }
 
@@ -61,7 +61,7 @@ public class LoseArranger : MonoBehaviour
         if (losePanel != null) losePanel.SetActive(false);
         if (playerAnim != null) playerAnim.SetTrigger("normal");
 
-        // 1. Player Reset (Character Controller kapatılarak ışınlanır)
+        // 1. Reset the player by disabling the character controller before teleporting
         CharacterController cc = GetComponent<CharacterController>();
         if (cc != null) cc.enabled = false;
         
@@ -70,32 +70,30 @@ public class LoseArranger : MonoBehaviour
         if (cc != null) cc.enabled = true;
         if (playerMove != null) playerMove.enabled = true;
 
-        // 2. Key Reset (Burayı Dikkatle Kontrol Et)
+        // 2. Reset the key object back to its spawn state
         if (key != null)
         {
-            // YENİ VE KRİTİK ADIM:
-            // Anahtarın üzerindeki CarryMode scriptini bulup 'Dur!' talimatı gönderiyoruz.
-            // Bu, takip Coroutine'ini anında durdurur.
+            // Stop any active carrying behavior on the key immediately
             CarryMode carryScript = key.GetComponent<CarryMode>();
             if (carryScript != null)
             {
-                carryScript.StopCarrying(); // Takibi durdur!
+                carryScript.StopCarrying(); // Stop the follow coroutine on the key
                 Debug.Log("CarryMode takibi durduruldu.");
             }
 
             Rigidbody rb = key.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                // Fiziksel hareketleri tamamen sıfırla
+                // Fully reset the key's physical movement
                 rb.velocity = Vector3.zero;
                 rb.angularVelocity = Vector3.zero;
                 
-                // StopCarrying zaten fiziği normale döndürüyor, emin olmak için tekrarlayalım
+                // Ensure physics settings are restored for the key
                 rb.isKinematic = false; 
                 rb.useGravity = true;
             }
 
-            // Anahtarı koordinatlarına ışınla
+            // Teleport the key back to its spawn coordinates
             key.transform.position = keySpawn;
             Debug.Log("Anahtar ışınlandı: " + keySpawn);
         }

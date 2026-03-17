@@ -4,11 +4,11 @@ using System.Collections;
 public class CarryMode : MonoBehaviour
 {
     [Header("Settings")]
-    public float carryDistance = 0.5f; // Jammo'ya yakın durması için
+    public float carryDistance = 0.5f; // Desired distance in front of the player while carrying
     public KeyCode carryKey = KeyCode.E; 
     
     [Header("References")]
-    public Transform playerTransform; // Inspector'dan atandığından emin ol
+    public Transform playerTransform; // Player transform reference (assign via Inspector)
     
     private Rigidbody rb;
     private Collider keyCollider; // Anahtarın çarpışma kutusu
@@ -18,7 +18,7 @@ public class CarryMode : MonoBehaviour
     void Start() 
     { 
         rb = GetComponent<Rigidbody>(); 
-        keyCollider = GetComponent<Collider>(); // Collider bileşenini al
+        keyCollider = GetComponent<Collider>(); // Cache the key's collider component
     }
 
     void Update()
@@ -37,38 +37,38 @@ public class CarryMode : MonoBehaviour
     {
         isCarrying = true;
 
-        // FİZİĞİ DONDUR VE HAREKETİ SIFIRLA
+        // Freeze physics and reset movement while carrying
         rb.isKinematic = true; 
         rb.useGravity = false; 
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
-        // %100 ÇÖZÜM: TAŞIRKEN ÇARPIŞMAYI TAMAMEN KAPAT
+        // Disable collisions completely while the object is being carried
         if (keyCollider != null)
         {
-            keyCollider.enabled = false; // Çarpışma kutusunu devre dışı bırak
+            keyCollider.enabled = false; // Turn off collider while carried
         }
 
-        // ÖDEV ŞARTI: Takip işlemi Coroutine ile yapılıyor
+        // Start coroutine to keep the object following the player
         carryCoroutine = StartCoroutine(FollowPlayerRoutine());
     }
 
-    // BU FONKSİYON PUBLIC OLMALI (LoseArranger buradan erişecek)
+    // Public so other scripts (e.g. LoseArranger) can stop carrying
     public void StopCarrying()
     {
         isCarrying = false;
 
-        // FİZİĞİ VE GRAVİTASYONU GERİ AÇ
+        // Re-enable physics and gravity when dropping the object
         if (rb != null) 
         { 
             rb.isKinematic = false; 
             rb.useGravity = true; 
         }
         
-        // ÇARPIŞMAYI GERİ AÇ (Böylece yere düşebilir, kapıya değebilir)
+        // Re-enable collisions so the object can interact with the environment again
         if (keyCollider != null)
         {
-            keyCollider.enabled = true; // Çarpışma kutusunu tekrar aç
+            keyCollider.enabled = true; // Turn collider back on when dropped
         }
 
         if (carryCoroutine != null)
@@ -82,10 +82,10 @@ public class CarryMode : MonoBehaviour
     {
         while (isCarrying)
         {
-            // Jammo'nun önündeki konumu hesapla
+            // Position the object slightly in front of and above the player while carried
             transform.position = playerTransform.position + playerTransform.forward * carryDistance + Vector3.up * 0.4f;
             transform.rotation = playerTransform.rotation;
-            yield return null; // Bir sonraki kareyi bekle
+            yield return null; // Wait for the next frame
         }
     }
 }

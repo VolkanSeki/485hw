@@ -9,7 +9,7 @@ public class GuardPatrol : MonoBehaviour
     public Type objectType;
 
     [Header("Common Settings")]
-    public Vector3 manualPosition; // Müfettişten (Inspector) girilecek X, Y, Z
+    public Vector3 manualPosition; // World position set from the Inspector
 
     [Header("Patrol Settings (For Enemy)")]
     public Vector3 pointA;
@@ -30,7 +30,7 @@ public class GuardPatrol : MonoBehaviour
         col = GetComponent<Collider>();
         skin = GetComponent<CharacterSkinController>();
 
-        // Objenin yerini müfettişten girilen koordinata sabitle
+        // Set initial position to the manually configured coordinates
         transform.position = manualPosition;
 
         if (objectType == Type.Enemy)
@@ -40,29 +40,29 @@ public class GuardPatrol : MonoBehaviour
         }
         else if (objectType == Type.Trap)
         {
-            // ÖDEV ŞARTI: Periyodik çalışma Coroutine ile yapılıyor
+            // Start trap cycle using a coroutine for periodic activation
             StartCoroutine(TrapCycleRoutine());
         }
     }
 
-    // --- TUZAK DÖNGÜSÜ (2sn Açık / 4sn Kapalı) ---
+    // Trap cycle: 2 seconds active, 4 seconds inactive
     IEnumerator TrapCycleRoutine()
     {
         while (true)
         {
-            // 1. TUZAK AKTİF (2 Saniye)
+            // Phase 1: trap active for the configured active time
             if (mesh != null) mesh.enabled = true;
             if (col != null) col.enabled = true;
             yield return new WaitForSeconds(activeTime);
 
-            // 2. TUZAK PASİF (4 Saniye)
+            // Phase 2: trap inactive for the configured inactive time
             if (mesh != null) mesh.enabled = false;
             if (col != null) col.enabled = false;
             yield return new WaitForSeconds(inactiveTime);
         }
     }
 
-    // --- DÜŞMAN DEVRİYE MANTIĞI ---
+    // Enemy patrol loop between point A and point B
     IEnumerator PatrolRoutine()
     {
         while (true)
