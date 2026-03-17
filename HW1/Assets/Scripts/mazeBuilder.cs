@@ -21,13 +21,11 @@ public class MazeBuilder : MonoBehaviour
 
   void BuildMaze()
     {
-        // FIX: Remove get_dataPath() and use .dataPath
-        // This looks for the file directly in your Assets folder
+
         string filePath = Path.Combine(Application.dataPath, fileName);
 
         if (!File.Exists(filePath))
         {
-            // Alternative: If you put it in a folder named 'Scripts'
             filePath = Path.Combine(Application.dataPath, "Data", fileName);
             
             if(!File.Exists(filePath))
@@ -50,8 +48,6 @@ public class MazeBuilder : MonoBehaviour
                 Vector3 pos = ParseVector3(matches[0].Groups[1].Value);
                 Vector3 scale = ParseVector3(matches[1].Groups[1].Value);
 
-                // For 3D Mazes, Python's Z is often Unity's Y
-                // If it looks like a "wall" on the ground, swap them:
                 if (swapYZ) {
                     pos = new Vector3(pos.x, pos.z, pos.y);
                 }
