@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PlayerEyes
   - Enemy
+  - Trap
   layers:
   - Default
   - TransparentFX
