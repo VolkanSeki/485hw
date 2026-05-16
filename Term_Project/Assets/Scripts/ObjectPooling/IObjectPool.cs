@@ -12,6 +12,11 @@ namespace ModularExperiment.ObjectPooling
         int InactiveCount { get; }
 
         /// <summary>
+        /// Number of currently active (checked-out) items in this pool.
+        /// </summary>
+        int ActiveCount { get; }
+
+        /// <summary>
         /// Number of items instantiated by this pool.
         /// </summary>
         int TotalAllocations { get; }
@@ -20,6 +25,11 @@ namespace ModularExperiment.ObjectPooling
         /// Number of requests served from inactive pooled items.
         /// </summary>
         int TotalReuses { get; }
+
+        /// <summary>
+        /// Number of get requests rejected due to strict capacity.
+        /// </summary>
+        int TotalRejections { get; }
 
         /// <summary>
         /// Adds more inactive items to the pool.
@@ -31,5 +41,10 @@ namespace ModularExperiment.ObjectPooling
         /// Removes all currently inactive items from the pool.
         /// </summary>
         void ClearInactive();
+
+        /// <summary>
+        /// Destroys and clears both inactive and active items tracked by this pool.
+        /// </summary>
+        void ClearAllObjects();
     }
 }

@@ -15,10 +15,19 @@ namespace ModularExperiment.Experiment
     /// </summary>
     public class ExperimentRunner : MonoBehaviour
     {
+        public enum ScenarioState
+        {
+            Idle,
+            Scenario1,
+            Scenario2,
+            Scenario3
+        }
+
         public event Action<string> ScenarioStarted;
         public event Action<string> ScenarioStopped;
         public event Action<int> BurstStarted;
         public event Action<int, double> BurstCompleted;
+        public event Action<ScenarioState> ScenarioStateChanged;
 
         [Serializable]
         public class SpawnerConfig
@@ -119,6 +128,7 @@ namespace ModularExperiment.Experiment
         private Coroutine scenarioOneRoutine;
         private readonly List<Coroutine> scenarioTwoRoutines = new List<Coroutine>();
         private BasePoolable scenarioOneCurrent;
+        private ScenarioState activeScenario = ScenarioState.Idle;
 
         /// <summary>
         /// Runtime toggle for pool usage.
@@ -171,29 +181,8 @@ namespace ModularExperiment.Experiment
         public string CostlyPoolKey => costlyPoolKey;
         public BasePoolable SimplePrefab => simplePrefab;
         public BasePoolable CostlyPrefab => costlyPrefab;
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                StartScenario1();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                StartScenario2();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                TriggerScenario3Burst();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                TriggerScenario3Burst();
-            }
-        }
+        public ScenarioState ActiveScenario => activeScenario;
+        public bool IsIdle => activeScenario == ScenarioState.Idle;
 
         /// <summary>
         /// Scenario 1:
@@ -201,8 +190,20 @@ namespace ModularExperiment.Experiment
         /// </summary>
         public void StartScenario1()
         {
+            if (!CanEnterScenario(ScenarioState.Scenario1))
+            {
+                return;
+            }
+
+            if (activeScenario == ScenarioState.Scenario1)
+            {
+                StopScenario1();
+                return;
+            }
+
             StopScenario1();
             scenarioOneRoutine = StartCoroutine(ScenarioOnePeriodicRoutine());
+            SetScenarioState(ScenarioState.Scenario1);
             ScenarioStarted?.Invoke("Scenario1");
         }
 
@@ -222,6 +223,11 @@ namespace ModularExperiment.Experiment
             {
                 ScenarioStopped?.Invoke("Scenario1");
             }
+
+            if (activeScenario == ScenarioState.Scenario1)
+            {
+                SetScenarioState(ScenarioState.Idle);
+            }
         }
 
         /// <summary>
@@ -230,8 +236,21 @@ namespace ModularExperiment.Experiment
         /// </summary>
         public void StartScenario2()
         {
-            StopScenario2();
+            if (!CanEnterScenario(ScenarioState.Scenario2))
+            {
+                return;
+            }
 
+            if (activeScenario == ScenarioState.Scenario2)
+            {
+                StopScenario2();
+                return;
+            }
+
+            StopScenario2();
+            EnsureScenario2IsConfigured();
+
+            var startedAny = false;
             for (var i = 0; i < streamSpawners.Count; i++)
             {
                 var config = streamSpawners[i];
@@ -242,8 +261,17 @@ namespace ModularExperiment.Experiment
 
                 var routine = StartCoroutine(StreamSpawnerRoutine(config));
                 scenarioTwoRoutines.Add(routine);
+                startedAny = true;
             }
 
+            if (!startedAny)
+            {
+                Debug.LogWarning("[ExperimentRunner] Scenario 2 has no valid stream configs.");
+                SetScenarioState(ScenarioState.Idle);
+                return;
+            }
+
+            SetScenarioState(ScenarioState.Scenario2);
             ScenarioStarted?.Invoke("Scenario2");
         }
 
@@ -263,6 +291,11 @@ namespace ModularExperiment.Experiment
             if (hadRoutines)
             {
                 ScenarioStopped?.Invoke("Scenario2");
+            }
+
+            if (activeScenario == ScenarioState.Scenario2)
+            {
+                SetScenarioState(ScenarioState.Idle);
             }
         }
 
@@ -286,8 +319,15 @@ namespace ModularExperiment.Experiment
 
         private void TriggerScenario3BurstInternal(int count)
         {
+            if (!CanEnterScenario(ScenarioState.Scenario3))
+            {
+                return;
+            }
+
+            SetScenarioState(ScenarioState.Scenario3);
             var timestamp = DateTime.Now.ToString("HH:mm:ss.fff");
             var startTime = Time.realtimeSinceStartupAsDouble;
+            var beforeStats = PoolManager.GetAggregateStats();
             ScenarioStarted?.Invoke("Scenario3-Burst");
             BurstStarted?.Invoke(count);
             Debug.Log($"[ExperimentRunner] Burst START @ {timestamp}, frame={Time.frameCount}, count={count}");
@@ -303,10 +343,18 @@ namespace ModularExperiment.Experiment
 
             var endTime = Time.realtimeSinceStartupAsDouble;
             var elapsedMs = (endTime - startTime) * 1000.0;
+            var afterStats = PoolManager.GetAggregateStats();
+            var rejectionDelta = afterStats.TotalRejections - beforeStats.TotalRejections;
+            if (rejectionDelta > 0)
+            {
+                Debug.LogWarning($"[ExperimentRunner] Burst had {rejectionDelta} pool rejections due to strict capacity.");
+            }
+
             Debug.Log(
                 $"[ExperimentRunner] Burst END @ {DateTime.Now:HH:mm:ss.fff}, frame={Time.frameCount}, elapsed={elapsedMs:F2}ms");
             BurstCompleted?.Invoke(count, elapsedMs);
             ScenarioStopped?.Invoke("Scenario3-Burst");
+            SetScenarioState(ScenarioState.Idle);
         }
 
         /// <summary>
@@ -337,6 +385,7 @@ namespace ModularExperiment.Experiment
         {
             StopScenario1();
             StopScenario2();
+            SetScenarioState(ScenarioState.Idle);
         }
 
         /// <summary>
@@ -385,20 +434,15 @@ namespace ModularExperiment.Experiment
         {
             while (true)
             {
-                if (scenarioOneCurrent != null)
-                {
-                    DespawnNow(scenarioOneCurrent);
-                    scenarioOneCurrent = null;
-                }
-
+                var pulseLifetime = GetScenario1PulseLifetime();
                 scenarioOneCurrent = SpawnByKey(
                     GetSelectedPoolKey(),
-                    objectLifetime,
+                    pulseLifetime,
                     transform.position,
                     transform.rotation,
                     GetSelectedFallbackPrefab());
 
-                yield return new WaitForSeconds(spawnFrequency);
+                yield return new WaitForSeconds(Mathf.Max(0.01f, spawnFrequency));
             }
         }
 
@@ -437,8 +481,13 @@ namespace ModularExperiment.Experiment
             if (usePooling)
             {
                 instance = PoolManager.Get<BasePoolable>(key);
+                if (instance == null)
+                {
+                    return null;
+                }
+
                 instance.transform.SetPositionAndRotation(position, rotation);
-                instance.ReturnToPoolAfter(lifetime);
+                instance.ScheduleLifetime(lifetime, poolingEnabled: true);
                 return instance;
             }
 
@@ -450,10 +499,7 @@ namespace ModularExperiment.Experiment
             }
 
             instance = Instantiate(prefab, position, rotation);
-            if (lifetime > 0f)
-            {
-                Destroy(instance.gameObject, lifetime);
-            }
+            instance.ScheduleLifetime(lifetime, poolingEnabled: false);
 
             return instance;
         }
@@ -494,6 +540,36 @@ namespace ModularExperiment.Experiment
             return null;
         }
 
+        private void EnsureScenario2IsConfigured()
+        {
+            if (streamSpawners.Count == 0)
+            {
+                ConfigureScenario2Chaos(
+                    streamCount: 2,
+                    frequency: 0.1f,
+                    lifetime: Mathf.Max(0.1f, objectLifetime),
+                    objectsPerTick: 1,
+                    randomRadius: 2f);
+                return;
+            }
+
+            // Self-heal empty keys from inspector misconfiguration.
+            for (var i = 0; i < streamSpawners.Count; i++)
+            {
+                var cfg = streamSpawners[i];
+                if (cfg == null || !string.IsNullOrWhiteSpace(cfg.PoolKey))
+                {
+                    continue;
+                }
+
+                cfg.PoolKeyInternal = GetSelectedPoolKey();
+                if (cfg.FallbackPrefab == null)
+                {
+                    cfg.FallbackPrefabInternal = GetSelectedFallbackPrefab();
+                }
+            }
+        }
+
         private SpawnerConfig CreateBatchSpawner(string key, float frequency, float lifetime)
         {
             return new SpawnerConfig
@@ -529,6 +605,33 @@ namespace ModularExperiment.Experiment
             {
                 costlyPrefab = costly;
             }
+        }
+
+        private bool CanEnterScenario(ScenarioState target)
+        {
+            return activeScenario == ScenarioState.Idle || activeScenario == target;
+        }
+
+        private void SetScenarioState(ScenarioState state)
+        {
+            if (activeScenario == state)
+            {
+                return;
+            }
+
+            activeScenario = state;
+            ScenarioStateChanged?.Invoke(activeScenario);
+        }
+
+        private float GetScenario1PulseLifetime()
+        {
+            var periodicLifetime = spawnFrequency * 0.8f;
+            if (objectLifetime > 0f)
+            {
+                periodicLifetime = Mathf.Min(objectLifetime, periodicLifetime);
+            }
+
+            return Mathf.Max(0.05f, periodicLifetime);
         }
 
     }

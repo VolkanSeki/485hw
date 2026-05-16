@@ -5,6 +5,7 @@ using ModularExperiment.ObjectPooling;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace ModularExperiment.Experiment
@@ -59,6 +60,9 @@ namespace ModularExperiment.Experiment
         private TMP_Text modeText;
 
         [SerializeField]
+        private TMP_Text scenarioStatusText;
+
+        [SerializeField]
         private TMP_Text memorySawtoothText;
 
         [SerializeField]
@@ -89,19 +93,46 @@ namespace ModularExperiment.Experiment
         private TMP_Dropdown compareScenarioDropdown;
 
         [SerializeField]
-        private Slider burstCountSlider;
+        private Button burstCount10Button;
+
+        [SerializeField]
+        private Button burstCount100Button;
+
+        [SerializeField]
+        private Button burstCount1000Button;
+
+        [SerializeField]
+        private Button burstCount10000Button;
 
         [SerializeField]
         private TMP_Text burstCountValueText;
 
         [SerializeField]
-        private Slider spawnFrequencySlider;
+        private Button spawnFreq005Button;
+
+        [SerializeField]
+        private Button spawnFreq01Button;
+
+        [SerializeField]
+        private Button spawnFreq05Button;
+
+        [SerializeField]
+        private Button spawnFreq10Button;
 
         [SerializeField]
         private TMP_Text spawnFrequencyValueText;
 
         [SerializeField]
-        private Slider preWarmCountSlider;
+        private Button preWarm100Button;
+
+        [SerializeField]
+        private Button preWarm1000Button;
+
+        [SerializeField]
+        private Button preWarm5000Button;
+
+        [SerializeField]
+        private Button preWarm10000Button;
 
         [SerializeField]
         private TMP_Text preWarmCountValueText;
@@ -153,6 +184,7 @@ namespace ModularExperiment.Experiment
         private readonly Color memorySpikeColor = new Color(1f, 0.55f, 0.25f, 1f);
         private string selectedComparisonScenarioKey = "Scenario3";
         private bool batchButtonListenerBound;
+        private int selectedPreWarmCount = 1000;
 
         private void Awake()
         {
@@ -196,6 +228,7 @@ namespace ModularExperiment.Experiment
             if (experimentRunner != null)
             {
                 experimentRunner.BurstCompleted += OnBurstCompleted;
+                experimentRunner.ScenarioStateChanged += OnScenarioStateChanged;
             }
 
             if (batchRunner != null)
@@ -210,6 +243,7 @@ namespace ModularExperiment.Experiment
             if (experimentRunner != null)
             {
                 experimentRunner.BurstCompleted -= OnBurstCompleted;
+                experimentRunner.ScenarioStateChanged -= OnScenarioStateChanged;
             }
 
             if (batchRunner != null)
@@ -223,6 +257,8 @@ namespace ModularExperiment.Experiment
         {
             UpdateFps();
             UpdateMode();
+            UpdateScenarioStatus();
+            UpdateScenarioButtonInteractivity();
             UpdateManagedMemoryLabel();
             UpdatePoolStats();
             PullRunnerValuesToControlLabels();
@@ -293,32 +329,20 @@ namespace ModularExperiment.Experiment
                 compareScenarioDropdown.onValueChanged.AddListener(OnCompareScenarioChanged);
             }
 
-            if (burstCountSlider != null)
-            {
-                burstCountSlider.wholeNumbers = true;
-                burstCountSlider.minValue = 1f;
-                burstCountSlider.maxValue = 10000f;
-                burstCountSlider.onValueChanged.RemoveListener(OnBurstCountSliderChanged);
-                burstCountSlider.onValueChanged.AddListener(OnBurstCountSliderChanged);
-            }
+            BindPresetButton(burstCount10Button, () => SetBurstCountPreset(10));
+            BindPresetButton(burstCount100Button, () => SetBurstCountPreset(100));
+            BindPresetButton(burstCount1000Button, () => SetBurstCountPreset(1000));
+            BindPresetButton(burstCount10000Button, () => SetBurstCountPreset(10000));
 
-            if (spawnFrequencySlider != null)
-            {
-                spawnFrequencySlider.wholeNumbers = false;
-                spawnFrequencySlider.minValue = 0.01f;
-                spawnFrequencySlider.maxValue = 2.0f;
-                spawnFrequencySlider.onValueChanged.RemoveListener(OnSpawnFrequencySliderChanged);
-                spawnFrequencySlider.onValueChanged.AddListener(OnSpawnFrequencySliderChanged);
-            }
+            BindPresetButton(spawnFreq005Button, () => SetSpawnFrequencyPreset(0.05f));
+            BindPresetButton(spawnFreq01Button, () => SetSpawnFrequencyPreset(0.1f));
+            BindPresetButton(spawnFreq05Button, () => SetSpawnFrequencyPreset(0.5f));
+            BindPresetButton(spawnFreq10Button, () => SetSpawnFrequencyPreset(1.0f));
 
-            if (preWarmCountSlider != null)
-            {
-                preWarmCountSlider.wholeNumbers = true;
-                preWarmCountSlider.minValue = 50f;
-                preWarmCountSlider.maxValue = 10000f;
-                preWarmCountSlider.onValueChanged.RemoveListener(OnPreWarmCountSliderChanged);
-                preWarmCountSlider.onValueChanged.AddListener(OnPreWarmCountSliderChanged);
-            }
+            BindPresetButton(preWarm100Button, () => SetPreWarmPreset(100));
+            BindPresetButton(preWarm1000Button, () => SetPreWarmPreset(1000));
+            BindPresetButton(preWarm5000Button, () => SetPreWarmPreset(5000));
+            BindPresetButton(preWarm10000Button, () => SetPreWarmPreset(10000));
 
             if (applyPreWarmButton != null)
             {
@@ -367,10 +391,7 @@ namespace ModularExperiment.Experiment
                 poolingToggle.isOn = experimentRunner.UsePooling;
             }
 
-            if (burstCountSlider != null)
-            {
-                burstCountSlider.SetValueWithoutNotify(experimentRunner.BurstCount);
-            }
+            SetBurstCountPreset(experimentRunner.BurstCount);
 
             if (objectTypeDropdown != null)
             {
@@ -382,20 +403,13 @@ namespace ModularExperiment.Experiment
                 compareScenarioDropdown.SetValueWithoutNotify(GetScenarioDropdownIndex(selectedComparisonScenarioKey));
             }
 
-            if (spawnFrequencySlider != null)
-            {
-                spawnFrequencySlider.SetValueWithoutNotify(experimentRunner.SpawnFrequency);
-            }
+            SetSpawnFrequencyPreset(experimentRunner.SpawnFrequency);
 
-            if (preWarmCountSlider != null)
-            {
-                var initialPreWarm = analytics != null ? analytics.PreWarmCount : 1000;
-                preWarmCountSlider.SetValueWithoutNotify(initialPreWarm);
-            }
+            selectedPreWarmCount = analytics != null ? analytics.PreWarmCount : 1000;
 
             if (analytics != null && experimentRunner != null)
             {
-                var preWarm = preWarmCountSlider != null ? Mathf.RoundToInt(preWarmCountSlider.value) : analytics.PreWarmCount;
+                var preWarm = selectedPreWarmCount;
                 analytics.ConfigurePreWarm(experimentRunner.GetSelectedPoolKey(), preWarm);
             }
 
@@ -416,8 +430,7 @@ namespace ModularExperiment.Experiment
         {
             if (preWarmCountValueText != null)
             {
-                var preWarm = preWarmCountSlider != null ? Mathf.RoundToInt(preWarmCountSlider.value) : 1000;
-                preWarmCountValueText.text = $"Pre-warm Count: {preWarm}";
+                preWarmCountValueText.text = $"Pre-warm Count: {selectedPreWarmCount}";
             }
 
             if (experimentRunner == null)
@@ -454,6 +467,25 @@ namespace ModularExperiment.Experiment
             if (label != null)
             {
                 label.text = textValue;
+            }
+        }
+
+        private static void BindPresetButton(Button button, UnityAction action)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(action);
+        }
+
+        private static void SetButtonInteractable(Button button, bool interactable)
+        {
+            if (button != null)
+            {
+                button.interactable = interactable;
             }
         }
 
@@ -502,6 +534,80 @@ namespace ModularExperiment.Experiment
                 modeText.text = experimentRunner.UsePooling ? "Mode: Pooling ON" : "Mode: Pooling OFF";
                 modeText.color = experimentRunner.UsePooling ? poolingOnColor : poolingOffColor;
             }
+        }
+
+        private void UpdateScenarioStatus()
+        {
+            if (scenarioStatusText == null)
+            {
+                return;
+            }
+
+            if (experimentRunner == null)
+            {
+                scenarioStatusText.text = "SYSTEM: IDLE";
+                scenarioStatusText.color = poolingOffColor;
+                return;
+            }
+
+            var scenarioText = experimentRunner.ActiveScenario == ExperimentRunner.ScenarioState.Idle
+                ? "SYSTEM: IDLE"
+                : $"RUNNING: {experimentRunner.ActiveScenario}";
+            var modeTextValue = experimentRunner.UsePooling ? "ON" : "OFF";
+
+            scenarioStatusText.text = $"CURRENT MODE: {modeTextValue}\n{scenarioText}";
+            scenarioStatusText.color = experimentRunner.UsePooling ? poolingOnColor : poolingOffColor;
+        }
+
+        private void UpdateScenarioButtonInteractivity()
+        {
+            if (experimentRunner == null)
+            {
+                return;
+            }
+
+            var active = experimentRunner.ActiveScenario;
+            var idle = active == ExperimentRunner.ScenarioState.Idle;
+
+            if (scenario1Button != null)
+            {
+                scenario1Button.interactable = idle || active == ExperimentRunner.ScenarioState.Scenario1;
+            }
+
+            if (scenario2Button != null)
+            {
+                scenario2Button.interactable = idle || active == ExperimentRunner.ScenarioState.Scenario2;
+            }
+
+            if (scenario3Button != null)
+            {
+                // Scenario 3 is instant burst; allow trigger only when system is idle.
+                scenario3Button.interactable = idle;
+            }
+
+            if (objectTypeDropdown != null)
+            {
+                objectTypeDropdown.interactable = idle;
+            }
+
+            SetButtonInteractable(burstCount10Button, idle);
+            SetButtonInteractable(burstCount100Button, idle);
+            SetButtonInteractable(burstCount1000Button, idle);
+            SetButtonInteractable(burstCount10000Button, idle);
+            SetButtonInteractable(spawnFreq005Button, idle);
+            SetButtonInteractable(spawnFreq01Button, idle);
+            SetButtonInteractable(spawnFreq05Button, idle);
+            SetButtonInteractable(spawnFreq10Button, idle);
+            SetButtonInteractable(preWarm100Button, idle);
+            SetButtonInteractable(preWarm1000Button, idle);
+            SetButtonInteractable(preWarm5000Button, idle);
+            SetButtonInteractable(preWarm10000Button, idle);
+        }
+
+        private void OnScenarioStateChanged(ExperimentRunner.ScenarioState _)
+        {
+            UpdateScenarioStatus();
+            UpdateScenarioButtonInteractivity();
         }
 
         private void UpdateManagedMemoryLabel()
@@ -611,34 +717,29 @@ namespace ModularExperiment.Experiment
             }
         }
 
-        private void OnBurstCountSliderChanged(float value)
+        private void SetBurstCountPreset(int burstCount)
         {
-            if (experimentRunner == null)
+            if (experimentRunner != null)
             {
-                return;
+                experimentRunner.BurstCount = Mathf.Max(1, burstCount);
             }
-
-            experimentRunner.BurstCount = Mathf.RoundToInt(value);
         }
 
-        private void OnSpawnFrequencySliderChanged(float value)
+        private void SetSpawnFrequencyPreset(float frequency)
         {
-            if (experimentRunner == null)
+            if (experimentRunner != null)
             {
-                return;
+                experimentRunner.SpawnFrequency = Mathf.Max(0.01f, frequency);
             }
-
-            experimentRunner.SpawnFrequency = value;
         }
 
-        private void OnPreWarmCountSliderChanged(float value)
+        private void SetPreWarmPreset(int preWarmCount)
         {
-            if (analytics == null)
+            selectedPreWarmCount = Mathf.Max(1, preWarmCount);
+            if (analytics != null)
             {
-                return;
+                analytics.PreWarmCount = selectedPreWarmCount;
             }
-
-            analytics.PreWarmCount = Mathf.RoundToInt(value);
         }
 
         private void OnApplyPreWarmClicked()
@@ -649,7 +750,7 @@ namespace ModularExperiment.Experiment
             }
 
             var key = experimentRunner.GetSelectedPoolKey();
-            var count = preWarmCountSlider != null ? Mathf.RoundToInt(preWarmCountSlider.value) : 1000;
+            var count = selectedPreWarmCount;
             PoolManager.PreWarm(key, count);
 
             if (analytics != null)
@@ -854,6 +955,7 @@ namespace ModularExperiment.Experiment
             if (fpsText != null &&
                 poolingStatsText != null &&
                 modeText != null &&
+                scenarioStatusText != null &&
                 memorySawtoothText != null &&
                 burstNoticeText != null &&
                 poolingToggle != null &&
@@ -864,7 +966,9 @@ namespace ModularExperiment.Experiment
                 compareScenarioDropdown != null &&
                 preWarmTestButton != null &&
                 compareBurstsButton != null &&
-                preWarmCountSlider != null &&
+                burstCount10Button != null &&
+                spawnFreq005Button != null &&
+                preWarm100Button != null &&
                 applyPreWarmButton != null &&
                 startFullBatchButton != null &&
                 start27sDemoButton != null &&
@@ -889,8 +993,8 @@ namespace ModularExperiment.Experiment
 
             EnsureEventSystem();
 
-            var metricsPanel = CreatePanel("MetricsPanel", canvas.transform as RectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(16f, -16f), new Vector2(520f, 165f));
-            var controlsPanel = CreatePanel("ControlsPanel", canvas.transform as RectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-16f, 0f), new Vector2(320f, 990f));
+            var metricsPanel = CreatePanel("MetricsPanel", canvas.transform as RectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(16f, -16f), new Vector2(520f, 210f));
+            var controlsPanel = CreatePanel("ControlsPanel", canvas.transform as RectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-16f, 0f), new Vector2(320f, 1120f));
             var noticePanel = CreatePanel("BurstNoticePanel", canvas.transform as RectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -20f), new Vector2(500f, 40f));
             var popupPanel = CreatePanel("ResultsPopupPanel", canvas.transform as RectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 0f), new Vector2(860f, 420f));
 
@@ -898,6 +1002,7 @@ namespace ModularExperiment.Experiment
             poolingStatsText = CreateTmpText("PoolStatsText", metricsPanel, "Pools: --", 20, TextAlignmentOptions.TopLeft, new Vector2(10f, -45f));
             modeText = CreateTmpText("ModeText", metricsPanel, "Mode: --", 22, TextAlignmentOptions.TopLeft, new Vector2(10f, -80f));
             memorySawtoothText = CreateTmpText("MemoryText", metricsPanel, "Managed Mem: --", 20, TextAlignmentOptions.TopLeft, new Vector2(10f, -115f));
+            scenarioStatusText = CreateTmpText("ScenarioStatusText", metricsPanel, "CURRENT MODE: OFF\nSYSTEM: IDLE", 22, TextAlignmentOptions.TopLeft, new Vector2(10f, -150f));
 
             burstNoticeText = CreateTmpText("BurstNoticeText", noticePanel, string.Empty, 24, TextAlignmentOptions.Center, Vector2.zero);
             burstNoticeText.gameObject.SetActive(false);
@@ -916,17 +1021,34 @@ namespace ModularExperiment.Experiment
             preWarmTestButton = CreateButton("PreWarmTestButton", controlsPanel, "Run Pre-warm Test", new Vector2(0f, -414f));
             compareBurstsButton = CreateButton("CompareBurstsButton", controlsPanel, "Compare Last Runs", new Vector2(0f, -464f));
 
-            burstCountSlider = CreateSlider("BurstSlider", controlsPanel, new Vector2(0f, -520f));
             burstCountValueText = CreateTmpText("BurstSliderLabel", controlsPanel, "Burst Count: --", 18, TextAlignmentOptions.Center, new Vector2(0f, -550f));
-            spawnFrequencySlider = CreateSlider("SpawnFreqSlider", controlsPanel, new Vector2(0f, -585f));
-            spawnFrequencyValueText = CreateTmpText("SpawnFreqLabel", controlsPanel, "Spawn Freq: --", 18, TextAlignmentOptions.Center, new Vector2(0f, -615f));
-            preWarmCountSlider = CreateSlider("PreWarmSlider", controlsPanel, new Vector2(0f, -650f));
-            preWarmCountValueText = CreateTmpText("PreWarmLabel", controlsPanel, "Pre-warm Count: --", 18, TextAlignmentOptions.Center, new Vector2(0f, -680f));
-            applyPreWarmButton = CreateButton("ApplyPreWarmButton", controlsPanel, "Apply Pre-warm To Selected", new Vector2(0f, -722f));
-            startFullBatchButton = CreateButton("StartFullBatchButton", controlsPanel, "START FULL BATCH TEST", new Vector2(0f, -772f));
-            start27sDemoButton = CreateButton("Start27sDemoButton", controlsPanel, "START 27s DEMO", new Vector2(0f, -822f));
-            batchProgressText = CreateTmpText("BatchProgressText", controlsPanel, "Batch: Idle", 16, TextAlignmentOptions.Center, new Vector2(0f, -862f));
-            batchProgressBar = CreateSlider("BatchProgressBar", controlsPanel, new Vector2(0f, -900f));
+            CreateTmpText("BurstPresetTitle", controlsPanel, "Burst Presets", 16, TextAlignmentOptions.Center, new Vector2(0f, -585f));
+            var burstPresetGroup = CreateHorizontalButtonGroup("BurstPresetGroup", controlsPanel, new Vector2(0f, -610f), new Vector2(280f, 32f));
+            burstCount10Button = CreateLayoutButton("Burst10Button", burstPresetGroup, "10");
+            burstCount100Button = CreateLayoutButton("Burst100Button", burstPresetGroup, "100");
+            burstCount1000Button = CreateLayoutButton("Burst1000Button", burstPresetGroup, "1000");
+            burstCount10000Button = CreateLayoutButton("Burst10000Button", burstPresetGroup, "10000");
+
+            spawnFrequencyValueText = CreateTmpText("SpawnFreqLabel", controlsPanel, "Spawn Freq: --", 18, TextAlignmentOptions.Center, new Vector2(0f, -650f));
+            CreateTmpText("SpawnPresetTitle", controlsPanel, "Spawn Frequency Presets", 16, TextAlignmentOptions.Center, new Vector2(0f, -680f));
+            var spawnPresetGroup = CreateHorizontalButtonGroup("SpawnPresetGroup", controlsPanel, new Vector2(0f, -705f), new Vector2(280f, 32f));
+            spawnFreq005Button = CreateLayoutButton("Spawn005Button", spawnPresetGroup, "0.05s");
+            spawnFreq01Button = CreateLayoutButton("Spawn01Button", spawnPresetGroup, "0.1s");
+            spawnFreq05Button = CreateLayoutButton("Spawn05Button", spawnPresetGroup, "0.5s");
+            spawnFreq10Button = CreateLayoutButton("Spawn10Button", spawnPresetGroup, "1.0s");
+
+            preWarmCountValueText = CreateTmpText("PreWarmLabel", controlsPanel, "Pre-warm Count: --", 18, TextAlignmentOptions.Center, new Vector2(0f, -745f));
+            CreateTmpText("PreWarmPresetTitle", controlsPanel, "Pre-warm Presets", 16, TextAlignmentOptions.Center, new Vector2(0f, -775f));
+            var preWarmPresetGroup = CreateHorizontalButtonGroup("PreWarmPresetGroup", controlsPanel, new Vector2(0f, -800f), new Vector2(280f, 32f));
+            preWarm100Button = CreateLayoutButton("PreWarm100Button", preWarmPresetGroup, "100");
+            preWarm1000Button = CreateLayoutButton("PreWarm1000Button", preWarmPresetGroup, "1000");
+            preWarm5000Button = CreateLayoutButton("PreWarm5000Button", preWarmPresetGroup, "5000");
+            preWarm10000Button = CreateLayoutButton("PreWarm10000Button", preWarmPresetGroup, "10000");
+            applyPreWarmButton = CreateButton("ApplyPreWarmButton", controlsPanel, "Apply Pre-warm To Selected", new Vector2(0f, -850f));
+            startFullBatchButton = CreateButton("StartFullBatchButton", controlsPanel, "START FULL BATCH TEST", new Vector2(0f, -900f));
+            start27sDemoButton = CreateButton("Start27sDemoButton", controlsPanel, "START 27s DEMO", new Vector2(0f, -950f));
+            batchProgressText = CreateTmpText("BatchProgressText", controlsPanel, "Batch: Idle", 16, TextAlignmentOptions.Center, new Vector2(0f, -990f));
+            batchProgressBar = CreateSlider("BatchProgressBar", controlsPanel, new Vector2(0f, -1028f));
 
             resultsPopupPanel = popupPanel.gameObject;
             CreateTmpText("PopupTitle", popupPanel, "Results Summary", 30, TextAlignmentOptions.Center, new Vector2(0f, -18f));
@@ -1038,6 +1160,57 @@ namespace ModularExperiment.Experiment
             button.targetGraphic = image;
 
             var labelText = CreateTmpText("Label", rect, label, 18, TextAlignmentOptions.Center, new Vector2(0f, -2f));
+            labelText.rectTransform.anchorMin = Vector2.zero;
+            labelText.rectTransform.anchorMax = Vector2.one;
+            labelText.rectTransform.pivot = new Vector2(0.5f, 0.5f);
+            labelText.rectTransform.anchoredPosition = Vector2.zero;
+            labelText.rectTransform.sizeDelta = Vector2.zero;
+            return button;
+        }
+
+        private static RectTransform CreateHorizontalButtonGroup(
+            string name,
+            RectTransform parent,
+            Vector2 anchoredPosition,
+            Vector2 size)
+        {
+            var groupGo = new GameObject(name, typeof(RectTransform), typeof(HorizontalLayoutGroup));
+            var rect = groupGo.GetComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.anchorMin = new Vector2(0.5f, 1f);
+            rect.anchorMax = new Vector2(0.5f, 1f);
+            rect.pivot = new Vector2(0.5f, 1f);
+            rect.anchoredPosition = anchoredPosition;
+            rect.sizeDelta = size;
+
+            var layout = groupGo.GetComponent<HorizontalLayoutGroup>();
+            layout.childAlignment = TextAnchor.MiddleCenter;
+            layout.childControlWidth = true;
+            layout.childControlHeight = true;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = true;
+            layout.spacing = 6f;
+            return rect;
+        }
+
+        private static Button CreateLayoutButton(string name, RectTransform parent, string label)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button), typeof(LayoutElement));
+            var rect = go.GetComponent<RectTransform>();
+            rect.SetParent(parent, false);
+            rect.sizeDelta = new Vector2(64f, 32f);
+
+            var le = go.GetComponent<LayoutElement>();
+            le.preferredWidth = 64f;
+            le.preferredHeight = 32f;
+            le.flexibleWidth = 1f;
+
+            var image = go.GetComponent<Image>();
+            image.color = new Color(0.16f, 0.45f, 0.7f, 0.9f);
+            var button = go.GetComponent<Button>();
+            button.targetGraphic = image;
+
+            var labelText = CreateTmpText("Label", rect, label, 14, TextAlignmentOptions.Center, Vector2.zero);
             labelText.rectTransform.anchorMin = Vector2.zero;
             labelText.rectTransform.anchorMax = Vector2.one;
             labelText.rectTransform.pivot = new Vector2(0.5f, 0.5f);

@@ -1,0 +1,1103 @@
+﻿================================
+POOLING BATCH BENCHMARK REPORT
+================================
+Generated At: 2026-05-16 12:54:42
+Unity Version: 2022.3.62f3
+Operating System: Mac OS X 26.4.0
+CPU: Apple M3
+GPU: Apple M3
+System RAM (MB): 16384
+Frame Rate Lock Enabled: True
+Configured Target Frame Rate: 60
+================================
+
+INDIVIDUAL RUN LOGS
+================================
+Run #1: Scenario1 | PoolingOFF | SimpleCube | SpawnFreq=0.35
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.36
+    * Minimum FPS: 41.15
+    * Maximum FPS: 108.88
+    * FPS Std Dev: 5.37
+    * 1% Low FPS: 42.88
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 24.30
+    * Frame-Time Jitter (ms): 0.64
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 161 (53.67%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.10
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 0
+    * GC Gen1: 0
+    * GC Gen2: 0
+================================
+Run #2: Scenario1 | PoolingON | SimpleCube | SpawnFreq=0.35
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.01
+    * Minimum FPS: 53.46
+    * Maximum FPS: 65.07
+    * FPS Std Dev: 0.69
+    * 1% Low FPS: 57.55
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 18.71
+    * Frame-Time Jitter (ms): 0.19
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 174 (57.81%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.54
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 20
+    * Total Rejections: 0
+    * Requested Spawns: 0
+    * Served Spawns: 0
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 1
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #3: Scenario2 | PoolingOFF | SimpleCube | FastFreq=0.10
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 59.99
+    * Minimum FPS: 56.51
+    * Maximum FPS: 63.71
+    * FPS Std Dev: 0.83
+    * 1% Low FPS: 56.85
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 17.70
+    * Frame-Time Jitter (ms): 0.26
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 172 (57.33%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.50
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+================================
+Run #4: Scenario2 | PoolingON | SimpleCube | FastFreq=0.10
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.02
+    * Minimum FPS: 50.28
+    * Maximum FPS: 77.96
+    * FPS Std Dev: 1.29
+    * 1% Low FPS: 54.56
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 19.89
+    * Frame-Time Jitter (ms): 0.21
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 172 (57.33%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.48
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 85
+    * Total Rejections: 0
+    * Requested Spawns: 0
+    * Served Spawns: 0
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 14
+    * Peak Inactive Count: 1988
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #5: Scenario2 | PoolingOFF | SimpleCube | FastFreq=0.25
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.00
+    * Minimum FPS: 54.61
+    * Maximum FPS: 65.76
+    * FPS Std Dev: 0.57
+    * 1% Low FPS: 57.60
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 18.31
+    * Frame-Time Jitter (ms): 0.15
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 170 (56.67%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.49
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+================================
+Run #6: Scenario2 | PoolingON | SimpleCube | FastFreq=0.25
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.05
+    * Minimum FPS: 44.65
+    * Maximum FPS: 87.65
+    * FPS Std Dev: 1.86
+    * 1% Low FPS: 55.62
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 22.40
+    * Frame-Time Jitter (ms): 0.21
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 172 (57.14%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.50
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 42
+    * Total Rejections: 0
+    * Requested Spawns: 0
+    * Served Spawns: 0
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 8
+    * Peak Inactive Count: 1994
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #7: Scenario2 | PoolingOFF | SimpleCube | FastFreq=0.50
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.20
+    * Minimum FPS: 38.10
+    * Maximum FPS: 140.14
+    * FPS Std Dev: 4.79
+    * 1% Low FPS: 53.90
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 26.24
+    * Frame-Time Jitter (ms): 0.24
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 181 (60.13%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.50
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+================================
+Run #8: Scenario2 | PoolingON | SimpleCube | FastFreq=0.50
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.29
+    * Minimum FPS: 39.04
+    * Maximum FPS: 172.53
+    * FPS Std Dev: 6.63
+    * 1% Low FPS: 52.59
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 25.61
+    * Frame-Time Jitter (ms): 0.36
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 164 (54.49%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.50
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 24
+    * Total Rejections: 0
+    * Requested Spawns: 0
+    * Served Spawns: 0
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 5
+    * Peak Inactive Count: 1997
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #9: Scenario2 | PoolingOFF | SimpleCube | FastFreq=0.75
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.01
+    * Minimum FPS: 57.12
+    * Maximum FPS: 63.66
+    * FPS Std Dev: 0.76
+    * 1% Low FPS: 57.56
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 17.51
+    * Frame-Time Jitter (ms): 0.32
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 155 (51.50%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.02
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 0
+    * GC Gen1: 0
+    * GC Gen2: 0
+================================
+Run #10: Scenario2 | PoolingON | SimpleCube | FastFreq=0.75
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.16
+    * Minimum FPS: 38.93
+    * Maximum FPS: 126.62
+    * FPS Std Dev: 4.06
+    * 1% Low FPS: 52.39
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 25.69
+    * Frame-Time Jitter (ms): 0.33
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 174 (58.00%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.49
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 17
+    * Total Rejections: 0
+    * Requested Spawns: 0
+    * Served Spawns: 0
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 4
+    * Peak Inactive Count: 1998
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #11: Scenario2 | PoolingOFF | SimpleCube | FastFreq=1.00
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.01
+    * Minimum FPS: 56.88
+    * Maximum FPS: 62.95
+    * FPS Std Dev: 0.79
+    * 1% Low FPS: 57.52
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 17.58
+    * Frame-Time Jitter (ms): 0.34
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 149 (49.67%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.06
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 0
+    * GC Gen1: 0
+    * GC Gen2: 0
+================================
+Run #12: Scenario2 | PoolingON | SimpleCube | FastFreq=1.00
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 120
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.16
+    * Minimum FPS: 38.65
+    * Maximum FPS: 129.12
+    * FPS Std Dev: 4.18
+    * 1% Low FPS: 54.03
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 25.87
+    * Frame-Time Jitter (ms): 0.25
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 173 (57.48%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.45
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 14
+    * Total Rejections: 0
+    * Requested Spawns: 0
+    * Served Spawns: 0
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 3
+    * Peak Inactive Count: 1999
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #13: Scenario3 | PoolingOFF | SimpleCube | Burst=10
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.46
+    * Minimum FPS: 40.22
+    * Maximum FPS: 114.42
+    * FPS Std Dev: 6.45
+    * 1% Low FPS: 42.05
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.68
+    * Peak Frame Time (ms): 24.86
+    * Frame-Time Jitter (ms): 0.84
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 153 (51.00%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.52
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+================================
+Run #14: Scenario3 | PoolingON | SimpleCube | Burst=10
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.00
+    * Minimum FPS: 58.81
+    * Maximum FPS: 61.33
+    * FPS Std Dev: 0.43
+    * 1% Low FPS: 58.91
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 17.00
+    * Frame-Time Jitter (ms): 0.17
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 162 (53.82%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.07
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 0
+    * GC Gen1: 0
+    * GC Gen2: 0
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 10
+    * Total Rejections: 0
+    * Requested Spawns: 10
+    * Served Spawns: 10
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #15: Scenario3 | PoolingOFF | SimpleCube | Burst=100
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 100
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.19
+    * Minimum FPS: 41.73
+    * Maximum FPS: 129.38
+    * FPS Std Dev: 4.26
+    * 1% Low FPS: 52.59
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.66
+    * Peak Frame Time (ms): 23.96
+    * Frame-Time Jitter (ms): 0.40
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 167 (55.48%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.54
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+================================
+Run #16: Scenario3 | PoolingON | SimpleCube | Burst=100
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 100
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.01
+    * Minimum FPS: 58.56
+    * Maximum FPS: 61.39
+    * FPS Std Dev: 0.66
+    * 1% Low FPS: 58.69
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 17.08
+    * Frame-Time Jitter (ms): 0.31
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 157 (52.16%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.09
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 0
+    * GC Gen1: 0
+    * GC Gen2: 0
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 100
+    * Total Rejections: 0
+    * Requested Spawns: 100
+    * Served Spawns: 100
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #17: Scenario3 | PoolingOFF | SimpleCube | Burst=1000
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 1000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.02
+    * Minimum FPS: 49.67
+    * Maximum FPS: 71.69
+    * FPS Std Dev: 1.01
+    * 1% Low FPS: 55.97
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 20.13
+    * Frame-Time Jitter (ms): 0.20
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 194 (64.67%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.33
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+================================
+Run #18: Scenario3 | PoolingON | SimpleCube | Burst=1000
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 1000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.56
+    * Minimum FPS: 38.94
+    * Maximum FPS: 238.89
+    * FPS Std Dev: 10.46
+    * 1% Low FPS: 50.14
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.65
+    * Peak Frame Time (ms): 25.68
+    * Frame-Time Jitter (ms): 0.48
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 165 (54.82%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.50
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 1000
+    * Total Rejections: 0
+    * Requested Spawns: 1000
+    * Served Spawns: 1000
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #19: Scenario3 | PoolingOFF | SimpleCube | Burst=10000
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.02
+    * Minimum FPS: 50.97
+    * Maximum FPS: 75.48
+    * FPS Std Dev: 1.22
+    * 1% Low FPS: 54.72
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 19.62
+    * Frame-Time Jitter (ms): 0.23
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 179 (59.67%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 4.26
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+================================
+Run #20: Scenario3 | PoolingON | SimpleCube | Burst=10000
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: SimpleCube
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.01
+    * Minimum FPS: 58.72
+    * Maximum FPS: 61.53
+    * FPS Std Dev: 0.63
+    * 1% Low FPS: 58.74
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 17.03
+    * Frame-Time Jitter (ms): 0.29
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 163 (54.33%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.66
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 1000
+    * Total Rejections: 9000
+    * Requested Spawns: 10000
+    * Served Spawns: 1000
+    * Rejected Spawn Percent: 90.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #21: Scenario3 | PoolingOFF | CostlySphere | Burst=10
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.15
+    * Minimum FPS: 38.98
+    * Maximum FPS: 123.64
+    * FPS Std Dev: 3.93
+    * 1% Low FPS: 50.93
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 25.66
+    * Frame-Time Jitter (ms): 0.39
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 155 (51.67%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.44
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+================================
+Run #22: Scenario3 | PoolingON | CostlySphere | Burst=10
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.00
+    * Minimum FPS: 58.68
+    * Maximum FPS: 61.33
+    * FPS Std Dev: 0.42
+    * 1% Low FPS: 58.75
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 17.04
+    * Frame-Time Jitter (ms): 0.14
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 164 (54.49%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.07
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 0
+    * GC Gen1: 0
+    * GC Gen2: 0
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 10
+    * Total Rejections: 0
+    * Requested Spawns: 10
+    * Served Spawns: 10
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #23: Scenario3 | PoolingOFF | CostlySphere | Burst=100
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 100
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.05
+    * Minimum FPS: 46.17
+    * Maximum FPS: 83.83
+    * FPS Std Dev: 1.79
+    * 1% Low FPS: 53.69
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 21.66
+    * Frame-Time Jitter (ms): 0.27
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 185 (61.46%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.12
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 2
+    * GC Gen1: 2
+    * GC Gen2: 2
+================================
+Run #24: Scenario3 | PoolingON | CostlySphere | Burst=100
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 100
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.01
+    * Minimum FPS: 58.49
+    * Maximum FPS: 61.41
+    * FPS Std Dev: 0.66
+    * 1% Low FPS: 58.58
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 17.10
+    * Frame-Time Jitter (ms): 0.31
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 156 (51.83%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.09
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 0
+    * GC Gen1: 0
+    * GC Gen2: 0
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 100
+    * Total Rejections: 0
+    * Requested Spawns: 100
+    * Served Spawns: 100
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #25: Scenario3 | PoolingOFF | CostlySphere | Burst=1000
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 1000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.03
+    * Minimum FPS: 52.56
+    * Maximum FPS: 79.03
+    * FPS Std Dev: 1.37
+    * 1% Low FPS: 54.88
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 19.02
+    * Frame-Time Jitter (ms): 0.22
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 150 (49.83%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.44
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+================================
+Run #26: Scenario3 | PoolingON | CostlySphere | Burst=1000
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 1000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.04
+    * Minimum FPS: 44.76
+    * Maximum FPS: 78.91
+    * FPS Std Dev: 1.87
+    * 1% Low FPS: 50.46
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.67
+    * Peak Frame Time (ms): 22.34
+    * Frame-Time Jitter (ms): 0.32
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 159 (53.00%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.54
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 1000
+    * Total Rejections: 0
+    * Requested Spawns: 1000
+    * Served Spawns: 1000
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #27: Scenario3 | PoolingOFF | CostlySphere | Burst=10000
+  - Test Metadata:
+    * Pooling Mode: OFF
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 58.65
+    * Minimum FPS: 1.85
+    * Maximum FPS: 113.03
+    * FPS Std Dev: 11.13
+    * 1% Low FPS: 2.59
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 24.20
+    * Peak Frame Time (ms): 541.40
+    * Frame-Time Jitter (ms): 4.84
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 112 (54.11%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 3.68
+    * System Reserved Delta (MB): 42.48
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+================================
+Run #28: Scenario3 | PoolingON | CostlySphere | Burst=10000
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: False
+  - Frame Rate Analytics:
+    * Average FPS: 60.14
+    * Minimum FPS: 48.02
+    * Maximum FPS: 108.83
+    * FPS Std Dev: 3.01
+    * 1% Low FPS: 54.44
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.66
+    * Peak Frame Time (ms): 20.82
+    * Frame-Time Jitter (ms): 0.35
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 163 (54.15%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 0.26
+    * System Reserved Delta (MB): 0.00
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 1000
+    * Total Rejections: 9000
+    * Requested Spawns: 10000
+    * Served Spawns: 1000
+    * Rejected Spawn Percent: 90.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 2000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+Run #29: Scenario3 | PoolingON | CostlySphere | Burst=10000
+  - Test Metadata:
+    * Pooling Mode: ON
+    * Target Frame Rate: 60
+    * Object Type: CostlySphere
+  - Configuration:
+    * Spawn Frequency: 0.350s
+    * Burst Count: 10000
+    * Pre-warm Count: 64
+    * Pool Capacity: 1000
+    * Allow Growth: True
+  - Frame Rate Analytics:
+    * Average FPS: 60.44
+    * Minimum FPS: 26.14
+    * Maximum FPS: 153.01
+    * FPS Std Dev: 7.25
+    * 1% Low FPS: 37.83
+  - CPU & Frame Time:
+    * Average Frame Time (ms): 16.71
+    * Peak Frame Time (ms): 38.26
+    * Frame-Time Jitter (ms): 0.91
+    * Frame Budget (ms): 16.67
+    * Frames Over Budget: 179 (59.67%)
+  - Memory & Heap:
+    * Managed Heap Delta (MB): 4.70
+    * System Reserved Delta (MB): 34.48
+  - Garbage Collection:
+    * GC Gen0: 1
+    * GC Gen1: 1
+    * GC Gen2: 1
+  - Pool Performance (Pooling ON):
+    * Total Allocations (Instantiate): 0
+    * Total Reuses: 10000
+    * Total Rejections: 0
+    * Requested Spawns: 10000
+    * Served Spawns: 10000
+    * Rejected Spawn Percent: 0.00%
+    * Peak Active Count: 0
+    * Peak Inactive Count: 15000
+    * Pre-warm Efficiency Ratio: 100.00%
+================================
+
+COMPARATIVE DELTA SUMMARY (ON vs OFF)
+================================
+Scenario1 | SimpleCube | SpawnFreq=0.35
+  - FPS Improvement: -0.57%
+  - Spike Reduction: 23.02%
+  - GC Elimination: 0.00%
+  - Memory Savings: -456.00%
+================================
+Scenario2 | SimpleCube | FastFreq=0.10
+  - FPS Improvement: 0.05%
+  - Spike Reduction: -12.38%
+  - GC Elimination: -100.00%
+  - Memory Savings: 3.88%
+================================
+Scenario2 | SimpleCube | FastFreq=0.25
+  - FPS Improvement: 0.07%
+  - Spike Reduction: -22.32%
+  - GC Elimination: 0.00%
+  - Memory Savings: -2.40%
+================================
+Scenario2 | SimpleCube | FastFreq=0.50
+  - FPS Improvement: 0.16%
+  - Spike Reduction: 2.41%
+  - GC Elimination: 50.00%
+  - Memory Savings: -0.78%
+================================
+Scenario2 | SimpleCube | FastFreq=0.75
+  - FPS Improvement: 0.25%
+  - Spike Reduction: -46.74%
+  - GC Elimination: 0.00%
+  - Memory Savings: -1983.33%
+================================
+Scenario2 | SimpleCube | FastFreq=1.00
+  - FPS Improvement: 0.26%
+  - Spike Reduction: -47.18%
+  - GC Elimination: 0.00%
+  - Memory Savings: -618.75%
+================================

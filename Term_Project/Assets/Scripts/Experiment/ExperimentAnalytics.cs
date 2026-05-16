@@ -14,6 +14,28 @@ namespace ModularExperiment.Experiment
     /// </summary>
     public class ExperimentAnalytics : MonoBehaviour
     {
+        public readonly struct FrameStats
+        {
+            public FrameStats(float averageFps, float minFps, float maxFps, float fpsStdDev, float onePercentLowFps, float averageFrameTimeMs, float peakFrameTimeMs)
+            {
+                AverageFps = averageFps;
+                MinFps = minFps;
+                MaxFps = maxFps;
+                FpsStdDev = fpsStdDev;
+                OnePercentLowFps = onePercentLowFps;
+                AverageFrameTimeMs = averageFrameTimeMs;
+                PeakFrameTimeMs = peakFrameTimeMs;
+            }
+
+            public float AverageFps { get; }
+            public float MinFps { get; }
+            public float MaxFps { get; }
+            public float FpsStdDev { get; }
+            public float OnePercentLowFps { get; }
+            public float AverageFrameTimeMs { get; }
+            public float PeakFrameTimeMs { get; }
+        }
+
         [Serializable]
         public struct SessionResult
         {
@@ -95,6 +117,7 @@ namespace ModularExperiment.Experiment
         private int startGen0Collections;
         private int startGen1Collections;
         private int startGen2Collections;
+        private float nextMemoryLabelUpdateTime;
 
         public IReadOnlyList<SessionResult> CompletedSessions => completedSessions;
 
@@ -453,8 +476,14 @@ namespace ModularExperiment.Experiment
                 return;
             }
 
+            if (Time.unscaledTime < nextMemoryLabelUpdateTime)
+            {
+                return;
+            }
+
+            nextMemoryLabelUpdateTime = Time.unscaledTime + 0.2f;
             var bytes = GC.GetTotalMemory(false);
-            memorySawtoothText.text = $"Managed Mem: {BytesToMb(bytes):0.00} MB";
+            memorySawtoothText.SetText("Managed Mem: {0:0.00} MB", (float)BytesToMb(bytes));
         }
 
         private static int CountAllPoolableInstances()
@@ -479,6 +508,71 @@ namespace ModularExperiment.Experiment
         private static double BytesToMb(long bytes)
         {
             return bytes / (1024.0 * 1024.0);
+        }
+
+        public static FrameStats ComputeFrameStats(IReadOnlyList<float> fpsSamples, IReadOnlyList<float> frameTimeSamplesMs)
+        {
+            var fpsCount = fpsSamples != null ? fpsSamples.Count : 0;
+            var ftCount = frameTimeSamplesMs != null ? frameTimeSamplesMs.Count : 0;
+            if (fpsCount == 0 || ftCount == 0)
+            {
+                return new FrameStats(0f, 0f, 0f, 0f, 0f, 0f, 0f);
+            }
+
+            var sumFps = 0f;
+            var minFps = float.MaxValue;
+            var maxFps = 0f;
+            for (var i = 0; i < fpsCount; i++)
+            {
+                var fps = fpsSamples[i];
+                sumFps += fps;
+                if (fps < minFps)
+                {
+                    minFps = fps;
+                }
+
+                if (fps > maxFps)
+                {
+                    maxFps = fps;
+                }
+            }
+
+            var avgFps = sumFps / fpsCount;
+            var variance = 0f;
+            for (var i = 0; i < fpsCount; i++)
+            {
+                var diff = fpsSamples[i] - avgFps;
+                variance += diff * diff;
+            }
+
+            variance /= fpsCount;
+            var stdDev = Mathf.Sqrt(variance);
+
+            var sorted = new List<float>(fpsSamples);
+            sorted.Sort();
+            var bottomCount = Mathf.Max(1, Mathf.CeilToInt(sorted.Count * 0.01f));
+            var bottomSum = 0f;
+            for (var i = 0; i < bottomCount; i++)
+            {
+                bottomSum += sorted[i];
+            }
+
+            var onePercentLow = bottomSum / bottomCount;
+
+            var sumFrameMs = 0f;
+            var peakFrameMs = 0f;
+            for (var i = 0; i < ftCount; i++)
+            {
+                var frameMs = frameTimeSamplesMs[i];
+                sumFrameMs += frameMs;
+                if (frameMs > peakFrameMs)
+                {
+                    peakFrameMs = frameMs;
+                }
+            }
+
+            var avgFrameMs = sumFrameMs / ftCount;
+            return new FrameStats(avgFps, minFps, maxFps, stdDev, onePercentLow, avgFrameMs, peakFrameMs);
         }
 
         private const string Scenario1Key = "Scenario1";

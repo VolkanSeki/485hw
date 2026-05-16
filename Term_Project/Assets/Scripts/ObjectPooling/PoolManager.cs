@@ -11,16 +11,20 @@ namespace ModularExperiment.ObjectPooling
     {
         public readonly struct PoolStats
         {
-            public PoolStats(int totalAllocations, int totalReuses, int inactiveCount, int poolCount)
+            public PoolStats(int totalAllocations, int totalReuses, int totalRejections, int activeCount, int inactiveCount, int poolCount)
             {
                 TotalAllocations = totalAllocations;
                 TotalReuses = totalReuses;
+                TotalRejections = totalRejections;
+                ActiveCount = activeCount;
                 InactiveCount = inactiveCount;
                 PoolCount = poolCount;
             }
 
             public int TotalAllocations { get; }
             public int TotalReuses { get; }
+            public int TotalRejections { get; }
+            public int ActiveCount { get; }
             public int InactiveCount { get; }
             public int PoolCount { get; }
         }
@@ -56,6 +60,9 @@ namespace ModularExperiment.ObjectPooling
             int initialCapacity = 0,
             int maxSize = int.MaxValue,
             bool allowGrowth = false,
+            int growthChunkSize = 500,
+            float growthFactor = 1.0f,
+            int maxGrowthChunkSize = 2000,
             bool collectionCheck = true,
             Action<T> onGet = null,
             Action<T> onReturn = null)
@@ -73,6 +80,9 @@ namespace ModularExperiment.ObjectPooling
                 initialCapacity: initialCapacity,
                 maxSize: maxSize,
                 allowGrowth: allowGrowth,
+                growthChunkSize: growthChunkSize,
+                growthFactor: growthFactor,
+                maxGrowthChunkSize: maxGrowthChunkSize,
                 collectionCheck: collectionCheck,
                 onGet: onGet,
                 onReturn: onReturn);
@@ -122,7 +132,7 @@ namespace ModularExperiment.ObjectPooling
                 return false;
             }
 
-            pool.ClearInactive();
+            pool.ClearAllObjects();
             return Pools.Remove(key);
         }
 
@@ -133,7 +143,7 @@ namespace ModularExperiment.ObjectPooling
         {
             foreach (var pair in Pools)
             {
-                pair.Value.ClearInactive();
+                pair.Value.ClearAllObjects();
             }
 
             Pools.Clear();
@@ -172,16 +182,20 @@ namespace ModularExperiment.ObjectPooling
         {
             var allocations = 0;
             var reuses = 0;
+            var rejections = 0;
+            var active = 0;
             var inactive = 0;
 
             foreach (var pair in Pools)
             {
                 allocations += pair.Value.TotalAllocations;
                 reuses += pair.Value.TotalReuses;
+                rejections += pair.Value.TotalRejections;
+                active += pair.Value.ActiveCount;
                 inactive += pair.Value.InactiveCount;
             }
 
-            return new PoolStats(allocations, reuses, inactive, Pools.Count);
+            return new PoolStats(allocations, reuses, rejections, active, inactive, Pools.Count);
         }
 
         /// <summary>
@@ -199,6 +213,8 @@ namespace ModularExperiment.ObjectPooling
             stats = new PoolStats(
                 totalAllocations: pool.TotalAllocations,
                 totalReuses: pool.TotalReuses,
+                totalRejections: pool.TotalRejections,
+                activeCount: pool.ActiveCount,
                 inactiveCount: pool.InactiveCount,
                 poolCount: 1);
             return true;

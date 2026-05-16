@@ -11,6 +11,20 @@ namespace ModularExperiment.Experiment
     /// </summary>
     public class UnityPoolFactory : MonoBehaviour
     {
+        public readonly struct PoolConfig
+        {
+            public PoolConfig(int preWarmCount, int maxSize, bool allowGrowth)
+            {
+                PreWarmCount = preWarmCount;
+                MaxSize = maxSize;
+                AllowGrowth = allowGrowth;
+            }
+
+            public int PreWarmCount { get; }
+            public int MaxSize { get; }
+            public bool AllowGrowth { get; }
+        }
+
         [Serializable]
         private class PoolDefinition
         {
@@ -30,6 +44,18 @@ namespace ModularExperiment.Experiment
             private bool allowGrowth;
 
             [SerializeField]
+            [Min(1)]
+            private int growthChunkSize = 500;
+
+            [SerializeField]
+            [Range(0.05f, 1.0f)]
+            private float growthFactor = 1.0f;
+
+            [SerializeField]
+            [Min(1)]
+            private int maxGrowthChunkSize = 2000;
+
+            [SerializeField]
             private Transform parentOverride;
 
             public string Key => key;
@@ -37,6 +63,9 @@ namespace ModularExperiment.Experiment
             public int PreWarmCount => Mathf.Max(0, preWarmCount);
             public int MaxSize => Mathf.Max(1, maxSize);
             public bool AllowGrowth => allowGrowth;
+            public int GrowthChunkSize => Mathf.Max(1, growthChunkSize);
+            public float GrowthFactor => Mathf.Clamp(growthFactor, 0.05f, 1.0f);
+            public int MaxGrowthChunkSize => Mathf.Max(GrowthChunkSize, maxGrowthChunkSize);
             public Transform ParentOverride => parentOverride;
         }
 
@@ -70,7 +99,10 @@ namespace ModularExperiment.Experiment
             Transform parent = null,
             int preWarmCount = 0,
             int maxSize = int.MaxValue,
-            bool allowGrowth = false)
+            bool allowGrowth = false,
+            int growthChunkSize = 500,
+            float growthFactor = 1.0f,
+            int maxGrowthChunkSize = 2000)
         {
             if (prefab == null)
             {
@@ -90,7 +122,10 @@ namespace ModularExperiment.Experiment
                 factory: Factory,
                 preWarmCount: Mathf.Max(0, preWarmCount),
                 maxSize: Mathf.Max(1, maxSize),
-                allowGrowth: allowGrowth);
+                allowGrowth: allowGrowth,
+                growthChunkSize: Mathf.Max(1, growthChunkSize),
+                growthFactor: Mathf.Clamp(growthFactor, 0.05f, 1.0f),
+                maxGrowthChunkSize: Mathf.Max(Mathf.Max(1, growthChunkSize), maxGrowthChunkSize));
         }
 
         private void RegisterConfiguredPools()
@@ -129,8 +164,34 @@ namespace ModularExperiment.Experiment
                     parent: parent,
                     preWarmCount: definition.PreWarmCount,
                     maxSize: definition.MaxSize,
-                    allowGrowth: definition.AllowGrowth);
+                    allowGrowth: definition.AllowGrowth,
+                    growthChunkSize: definition.GrowthChunkSize,
+                    growthFactor: definition.GrowthFactor,
+                    maxGrowthChunkSize: definition.MaxGrowthChunkSize);
             }
+        }
+
+        public bool TryGetPoolConfig(string key, out PoolConfig config)
+        {
+            config = default;
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                return false;
+            }
+
+            for (var i = 0; i < poolDefinitions.Count; i++)
+            {
+                var definition = poolDefinitions[i];
+                if (definition == null || !string.Equals(definition.Key, key, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                config = new PoolConfig(definition.PreWarmCount, definition.MaxSize, definition.AllowGrowth);
+                return true;
+            }
+
+            return false;
         }
     }
 }
